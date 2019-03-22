@@ -1,21 +1,83 @@
 package com.jd.x.redis;
 
+import com.jd.x.redis.test.JedisUtil;
+import com.jd.x.redis.test.RedisUtil;
+import org.redisson.api.RedissonClient;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import redis.clients.jedis.Jedis;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.lang.Thread.currentThread;
+import static java.lang.Thread.sleep;
 
 /**
  * Created by kongpeiling on 2018/12/29 20:04.
  */
 public class RedisResource {
+
+
     public static void main(String[] args) {
-       // TestClass myfactorybean = (TestClass)new ClassPathXmlApplicationContext("conf/producer.xml").getBean("myfactorybean");
-       // myfactorybean.out();
-        RedissonDemo myfactorybean = (RedissonDemo)new ClassPathXmlApplicationContext("conf/producer.xml").getBean("myfactorybean");
-        HashMap map = new HashMap<>();
-        map.put(1,2);
-        myfactorybean.getMap("kongpeiling","kpl",map);
+        FactoryBeanTest factoryBeanTest =new FactoryBeanTest();
+        RedissonClient redissonClient= factoryBeanTest.getRedissonClient();
+        String key ="Test_only";
+//        for(int i=0;i<2;i++){
+////                    new Thread(new Runnable() {
+////                        @Override
+////                        public void run() {
+////                            testtrylock(redissonClient,key);
+////                        }
+////                    }).start();
+////        }
+        JedisUtil jedisUtil = new JedisUtil();
+        jedisUtil.SetNx("kpl","lockname");
+
     }
+
+    public  static void testlock(RedissonClient redissonClient,String key)
+    {
+        try {
+            new RedisUtil(redissonClient).lock(key);
+            System.out.println("----------加锁时间为:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            System.out.println("----------当前线程为" + Thread.currentThread().getName());
+            sleep(5000);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            new RedisUtil(redissonClient).unlock(key);
+            System.out.println("----------释放锁时间为" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            System.out.println("----------当前线程为" + Thread.currentThread().getName());
+        }
+    }
+
+    public  static void testtrylock(RedissonClient redissonClient, String key)
+    {
+        Boolean b=null;
+        try {
+           b = new RedisUtil(redissonClient).tryLock(key);
+            if(!b){
+                System.out.println("----------尝试获取不到锁--------"+"----------当前线程为" + Thread.currentThread().getName());
+                return;
+            }
+            System.out.println("----------加锁时间为:" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            System.out.println("----------当前线程为" + Thread.currentThread().getName());
+
+            Thread.currentThread().sleep(6000);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }finally
+        {
+            if(b) {
+                new RedisUtil(redissonClient).unlock(key);
+                System.out.println("----------释放锁时间为" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                System.out.println("----------当前线程为" + Thread.currentThread().getName());
+            }
+        }
+    }
+
 }

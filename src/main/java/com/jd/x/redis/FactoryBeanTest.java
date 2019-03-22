@@ -18,6 +18,10 @@ public class FactoryBeanTest implements FactoryBean<RedissonDemo> {
 
     private  RedissonClient redissonClient;
 
+    public RedissonClient getRedissonClient() {
+        return redissonClient;
+    }
+
     FactoryBeanTest(){
         Config config = new Config();
 
