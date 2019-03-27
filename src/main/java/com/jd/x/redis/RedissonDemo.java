@@ -20,6 +20,10 @@ public class RedissonDemo {
         this.redissonClient = redissonClient;
     }
 
+    public RedissonClient getRedissonClient() {
+        return redissonClient;
+    }
+
     /**
      * 根据name对进行上锁操作，redisson Lock 一直等待获取锁
      * @param key

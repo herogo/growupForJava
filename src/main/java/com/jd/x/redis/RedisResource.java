@@ -2,6 +2,7 @@ package com.jd.x.redis;
 
 import com.jd.x.redis.test.JedisUtil;
 import com.jd.x.redis.test.RedisUtil;
+import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import redis.clients.jedis.Jedis;
@@ -21,21 +22,25 @@ public class RedisResource {
 
 
     public static void main(String[] args) {
-        FactoryBeanTest factoryBeanTest =new FactoryBeanTest();
-        RedissonClient redissonClient= factoryBeanTest.getRedissonClient();
-        String key ="Test_only";
-//        for(int i=0;i<2;i++){
-////                    new Thread(new Runnable() {
-////                        @Override
-////                        public void run() {
-////                            testtrylock(redissonClient,key);
-////                        }
-////                    }).start();
-////        }
-        JedisUtil jedisUtil = new JedisUtil();
-        jedisUtil.SetNx("kpl","lockname");
 
-    }
+
+        String key ="Test_only";
+        FactoryBeanTest factoryBeanTestA = new FactoryBeanTest();
+        RedissonClient redissonClienta = factoryBeanTestA.getRedissonClient();
+        FactoryBeanTest factoryBeanTestB = new FactoryBeanTest();
+        RedissonClient redissonClientb = factoryBeanTestB.getRedissonClient();
+
+        RLock lock = redissonClienta.getLock(key);
+        RLock lock1 = redissonClientb.getLock(key);
+        lock.lock();
+        lock1.unlock();
+
+
+        }
+//        JedisUtil jedisUtil = new JedisUtil();
+//        jedisUtil.SetNx("kpl","lockname");
+
+
 
     public  static void testlock(RedissonClient redissonClient,String key)
     {
