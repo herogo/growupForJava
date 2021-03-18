@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
 /**
@@ -15,7 +16,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 public class MyServerHandler extends SimpleChannelInboundHandler<String> {//SimpleChatServerHandler 继承自 SimpleChannelInboundHandler，这个类实现了ChannelInboundHandler接口，ChannelInboundHandler 提供了许多事件处理的接口方法，然后你可以覆盖这些方法。
 
     public static ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-
+    private int i =0;
 
     //覆盖了 handlerAdded() 事件处理方法。每当从服务端收到新的客户端连接时，客户端的 Channel 存入ChannelGroup列表中，
     // 并通知列表中的其他客户端 Channel
@@ -48,6 +49,8 @@ public class MyServerHandler extends SimpleChannelInboundHandler<String> {//Simp
                 channel.writeAndFlush("[" + incoming.remoteAddress() + "]" + s + "\n");
             } else {
                 channel.writeAndFlush("[you]" + s + "\n").sync();
+                System.out.println(s.getBytes().toString());
+                System.out.println("=============线程名："+Thread.currentThread().getId()+"i:"+i++);
             }
         }
     }
@@ -74,5 +77,12 @@ public class MyServerHandler extends SimpleChannelInboundHandler<String> {//Simp
         // 当出现异常就关闭连接
         cause.printStackTrace();
         ctx.close();
+    }
+
+    //服务端长连接 事件触发处理方法
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        IdleStateEvent event = (IdleStateEvent) evt;
+        System.out.println("---------------"+event.state());
     }
 }

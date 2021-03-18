@@ -20,7 +20,5 @@ public class ResteasyClientTest {
         ResteasyClientUtils<SortPocketStatusResponse> client = new ResteasyClientUtils();
         SortPocketStatusResponse response = client.get(map, URLPATH, SortPocketStatusResponse.class);
         System.out.println(response.toString());
-
-
     }
 }

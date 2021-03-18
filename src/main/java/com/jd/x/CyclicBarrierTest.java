@@ -1,6 +1,7 @@
 package com.jd.x;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+
 /**
  * Created by kongpeiling on 2019/3/11 10:22.
  */

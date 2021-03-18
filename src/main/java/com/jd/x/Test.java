@@ -1,11 +1,16 @@
 package com.jd.x;
 
+import com.jd.x.jsonTest.JsonHelper;
+
 /**
  * Created by kongpeiling on 2019/4/4 19:40.
+ * description:The program for get different words in string
  */
+
 public class Test {
     public static void main(String[] args)
     {
+
         String s="abdcddafaaaio";
         char[] chars = s.toCharArray();
         char[] num = new char[26];
@@ -22,7 +27,6 @@ public class Test {
                 }
             }
             if(!flag){
-
                 num[k] =chars[i];
                 k++;
             }

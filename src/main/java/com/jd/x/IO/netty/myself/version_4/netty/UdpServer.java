@@ -31,7 +31,6 @@ public class UdpServer {
     }
 
     private static class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
-
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) throws Exception {
             ByteBuf buf = packet.copy().content();
