@@ -163,10 +163,11 @@ public  class  SortExercise {
 
     public static void heapSort(int [] sorted){
         //1.构建大顶堆
-        for(int i=sorted.length/2-1; i>=0;i--){
+        for(int i=sorted.length/2-1; i>=0;i--){ // i 为最小的非叶子节点
             //从第一个非叶子结点从下至上，从右至左调整结构
             adjustHeap(sorted,i,sorted.length);
         }
+
         //2.调整堆结构+交换堆顶元素与末尾元素
         for(int j=sorted.length-1;j>0;j--){
             swap(sorted,0,j);//将堆顶元素与末尾元素进行交换
