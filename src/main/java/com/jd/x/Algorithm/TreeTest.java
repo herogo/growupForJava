@@ -11,8 +11,9 @@ package com.jd.x.Algorithm;
 public class TreeTest {
     public static void main(String[] args) {
         BinaryTree binTree = new BinaryTree();
-
         binTree.layerTranverse();
+
+        System.out.println(Math.log(200) / Math.log(1.02) / 12);
     }
 
     public void quickSort(int []Array,int left,int right){
@@ -35,10 +36,6 @@ public class TreeTest {
                 Array[i] = Array[j];
                 Array[j] = temp;
             }
-
         }
-
     }
-
-
 }

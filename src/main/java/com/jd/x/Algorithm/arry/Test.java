@@ -2,6 +2,9 @@ package com.jd.x.Algorithm.arry;
 
 import scala.Char;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Test {
 
     public static void main(String[] args) {
@@ -48,11 +51,15 @@ public class Test {
         String re = "aaaaaa";
         String s = "abcabcbb";
 
-        System.out.println(solution6_1(re));
-        System.out.println(solution6_1(s));
-        System.out.println(solution6_1("pwwkew"));
-        System.out.println(solution6_1(""));
+//        System.out.println(solution6_1(re));
+//        System.out.println(solution6_1(s));
+//        System.out.println(solution6_1("pwwkew"));
+//        System.out.println(solution6_1(""));
 
+       // System.out.println(isAng("abc","bac"));
+        // s: "cbaebabacd" p: "abc"
+        //System.out.println(solution7_1("cbaebabacd","abc"));
+        System.out.println(solution8_2("cbaebabacd","ab"));
 
     }
 
@@ -79,7 +86,7 @@ public class Test {
         //优化解法  利用有序
         for(int i=0;i<R.length-1;i++){
             for(int j =i+1;j<R.length;j++){
-                if(R[i]+R[j] >sum)
+                if(R[i]+R[j] >sum)//因为有序 可以直接终止继续
                     break;
                 if(R[i]+R[j] ==sum){
                     System.out.println("索引:"+i+","+j);
@@ -336,9 +343,9 @@ public class Test {
         }
         return lengthMax;
     }
-    
+
     /**
-     * 判断有无重复字符串
+     * 判断有无重复字符串`
      * @param str
      * @return
      */
@@ -359,6 +366,156 @@ public class Test {
         return true;
     }
 
+
+    /** 试题7
+     * leetcode 438  找到字符串中所有字母异位词
+     *
+     * 给定一个字符串 s 和一个非空字符串 p，找到 s 中所有是 p 的字母异位词的子串，返回这些子串的起始索引。
+     * 字符串只包含小写英文字母，并且字符串 s 和 p 的长度都不超过 20100。
+     * 输入:
+     * s: "cbaebabacd" p: "abc"
+     *
+     * 输出:
+     * [0, 6]
+     *
+     * 解释:
+     * 起始索引等于 0 的子串是 "cba", 它是 "abc" 的字母异位词。
+     * 起始索引等于 6 的子串是 "bac", 它是 "abc" 的字母异位词。
+     */
+
+    public static List<Integer> solution7_1(String s,String p){
+        int i=0;
+        int j = p.length()-1;//滑动步长
+        List<Integer> result = new ArrayList();
+        while (j<s.length()){
+            String substring = s.substring(i, j + 1);
+            if(isAng(p,substring)){
+                result.add(i);
+            }
+            i++;
+            j++;
+        }
+        return result;
+    }
+
+    public static boolean isAng(String s2,String s1){
+        //初始化一个ASCII码数组
+        int fre[] =new int[256];
+        int fre2[] =new int[256];
+        for (int i=0;i<fre.length;i++){
+            fre[i] =0;
+            fre2[i] =0;
+        }
+        int i=0;
+        while (i<s1.length()){
+            fre[s1.charAt(i++)]++;
+        }
+        int j=0;
+        while (j<s2.length()){
+            fre2[s2.charAt(j++)]++;
+        }
+        int k=0;
+        while (k<s2.length()){
+            int temp1 = fre[s1.charAt(k)];
+            int temp2 = fre2[s1.charAt(k++)];
+            if(temp1 != temp2){
+              return false;
+            }
+        }
+       return true;
+    }
+
+    /**
+     * leetcode 76 给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。
+     * 输入：s = "ADOBECODEBANC", t = "ABC"
+     * 输出："BANC"
+     *
+     * 输入：s = "a", t = "a"
+     * 输出："a"
+     */
+    public static String solution8_1(String s,String t){
+        int [] fre = new int[256];
+        for (int i=0;i<fre.length;i++){
+            fre[i] =0;
+        }
+        int i=0;
+        while (i<t.length()){
+            fre[t.charAt(i++)]++;
+        }
+        int left =0;
+        int right=0;
+        int length =s.length();
+        String result ="";
+
+        while(left<=right && right <s.length()){
+            String substring = s.substring(left, right + 1);
+            int [] sub = new int[256];
+            int k=0;
+            while (k<substring.length()){
+                sub[substring.charAt(k++)]++;  //没必要每次循环都构建这个窗口字符的出现频率数组  见solution8_2
+            }
+            if(contain(sub, fre)){
+                if(length >= right-left+1){
+                    length = right-left+1;
+                    result = substring;
+                }
+                left++;
+            }else {
+                right++;
+            }
+        }
+        return result;
+    }
+
+
+    public static String solution8_2(String s,String t){
+        int [] fre = new int[256];
+        for (int i=0;i<fre.length;i++){
+            fre[i] =0;
+        }
+        int i=0;
+        while (i<t.length()){
+            fre[t.charAt(i++)]++;
+        }
+        int left =0;
+        int right=0;
+         int length =s.length();
+        String result ="";
+        int [] sub = new int[256];
+        int k=0;
+        String substring = s.substring(left, right + 1);
+        sub[substring.charAt(0)]++;  //初始化窗口字符的出现频率数组
+        while(left<=right && right <s.length()){
+            if(contain(sub, fre)){
+                if(length >= right-left+1){
+                    length = right-left+1;
+                    result = s.substring(left,right+1);
+                }
+                sub[s.charAt(left++)]--;  //左指针向后移 则减去左指针对应的字符出现的频率
+            }else {
+                if(++right<s.length()){
+                    sub[s.charAt(right)]++;//右指针向后移 则加上右指针对应的字符出现的频率
+                }
+            }
+        }
+        return result;
+    }
+    /**
+     *
+     * @param r1 主数组
+     * @param r2 子数组
+     * @return
+     */
+    public static boolean contain(int [] r1,int [] r2){
+        int i=0;
+        while(i<r1.length){
+            if(r1[i] < r2[i]){
+                return false;
+            }
+            i++;
+        }
+        return true;
+    }
 
 
 

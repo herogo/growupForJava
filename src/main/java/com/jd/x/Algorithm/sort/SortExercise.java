@@ -51,9 +51,7 @@ public  class  SortExercise {
      * 冒泡
      */
     public static void popSort(int[] R){
-
         for(int i=R.length-1; i>=0; i--){
-
             for(int j=1;j<=i;j++)
             {
                 if(R[j-1]>R[j])
@@ -224,6 +222,43 @@ public  class  SortExercise {
         int temp=arr[a];
         arr[a] = arr[b];
         arr[b] = temp;
+    }
+
+
+    /**
+     * 数组堆排序
+     */
+    public static void heapSortMyself(int []R){
+        //构建大根堆
+        //找到最后一个非叶子节点开始构建   最后一个叶子节点在数组中的位置 t = R.length/2 + 1  ,t之前的每一个位置都是非叶子节点
+        for(int i= R.length /2 +1 ;i>0;i--){
+           adjustHeapMyself(R,i,R.length);
+        }
+        //排序
+        for(int j=R.length;j>0;j--){
+            swap(R,0,j); //顶元素与最后一个交换
+            //继续调整堆
+            adjustHeapMyself(R,0,j);
+        }
+
+    }
+
+
+    public static void adjustHeapMyself(int [] R,int i,int length){
+        //与i节点的子节点作调整
+        for(int k=2*i+1; k<length;k=2*k+1){
+            if(R[k+1] > R[k]){
+                k++;
+            }
+            if(R[i]<R[k]){
+                int temp = R[i];
+                R[i] = R[k];
+                R[k] = temp;
+                i=k;
+            }
+        }
+
+
     }
 
 

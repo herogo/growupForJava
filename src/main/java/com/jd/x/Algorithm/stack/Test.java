@@ -6,7 +6,7 @@ import java.util.Deque;
 import java.util.Stack;
 
 public class Test {
-    public static void main(String[] args) {
+    public static void main1(String[] args) {
         MyQueue myQueue =new MyQueue();
         int[] R = new int[]{1,2};
         int i=0;
@@ -16,6 +16,29 @@ public class Test {
         }
         System.out.println(myQueue.peek());
         System.out.println(myQueue.pop());
+
+
+
+
+
+
+
+    }
+
+    public static void main(String[] args) {
+        cpm(500000,20000,1.05,0,10000000);
+    }
+
+
+    public static void cpm(double cost,double dt,double lv,double mon,double all){
+        cost = (cost+dt)*lv;
+        if(cost >= all){
+            System.out.println( mon / 12);
+            return;
+        }
+        mon++;
+        cpm(cost,dt,lv,mon,all);
+
     }
 }
     /**
